@@ -197,8 +197,8 @@
 
     /* ── PRICING ── */
     .pricing-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
-      max-width: 760px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;
+      max-width: 1080px; margin: 0 auto;
     }
     .price-card {
       border: 2px solid #e5e7eb; border-radius: 16px;
@@ -247,6 +247,7 @@
     /* ── RESPONSIVE ── */
     @media (max-width: 720px) {
       .learn-grid, .trainers-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .pricing-grid { max-width: 100%; }
       .hero-stats { gap: 2rem; }
       .cert-box { padding: 2rem; }
     }
@@ -381,32 +382,47 @@
     <p class="section-sub" style="text-align:center; margin: 0 auto 3rem;">Limited seats available. Early bird pricing ends soon.</p>
 
     <div class="pricing-grid">
+      <!-- EXPRESS -->
       <div class="price-card featured">
-        <div class="price-badge">Early Bird — Until Apr 30</div>
-        <div class="price-label">Save $51</div>
-        <div class="price-amount"><sup>$</sup>199</div>
-        <div class="price-note">Available through April 30, 2026</div>
+        <div class="price-badge">Express — Apr 13–20</div>
+        <div class="price-label">Best Price</div>
+        <div class="price-amount"><sup>$</sup>129</div>
+        <div class="price-note">April 13 – 20, 2026 only</div>
         <ul class="price-features">
           <li>3-hour live training</li>
           <li>Both sessions included</li>
-          <li>Certificate of completion</li>
+          <li>Certificate of participation</li>
           <li>Access to session materials</li>
         </ul>
-        <!-- REPLACE WITH LIVE STRIPE LINK BEFORE LAUNCH -->
-        <a href="https://buy.stripe.com/8x2aEWfxy9e64Hg3RNcwg01" target="_blank" class="btn-register btn-primary">Register for $199</a>
+        <a href="https://buy.stripe.com/8x2aEWfxy9e64Hg3RNcwg01" target="_blank" class="btn-register btn-primary">Register for $129</a>
       </div>
 
+      <!-- EARLY BIRD -->
+      <div class="price-card">
+        <div class="price-badge" style="background:#e5e7eb;color:#1a2e4a;">Early Bird</div>
+        <div class="price-label">Save $81</div>
+        <div class="price-amount"><sup>$</sup>169</div>
+        <div class="price-note">April 21 – May 20, 2026</div>
+        <ul class="price-features">
+          <li>3-hour live training</li>
+          <li>Both sessions included</li>
+          <li>Certificate of participation</li>
+          <li>Access to session materials</li>
+        </ul>
+        <a href="https://buy.stripe.com/8x2aEWfxy9e64Hg3RNcwg01" target="_blank" class="btn-register btn-secondary">Register for $169</a>
+      </div>
+
+      <!-- REGULAR -->
       <div class="price-card">
         <div class="price-label">Regular Price</div>
         <div class="price-amount"><sup>$</sup>250</div>
-        <div class="price-note">Available May 1 – May 31, 2026</div>
+        <div class="price-note">May 21, 2026 – Event</div>
         <ul class="price-features">
           <li>3-hour live training</li>
           <li>Both sessions included</li>
-          <li>Certificate of completion</li>
+          <li>Certificate of participation</li>
           <li>Access to session materials</li>
         </ul>
-        <!-- REPLACE WITH LIVE STRIPE LINK BEFORE LAUNCH -->
         <a href="https://buy.stripe.com/bJeeVc712gGyc9I4VRcwg00" target="_blank" class="btn-register btn-secondary">Register for $250</a>
       </div>
     </div>
