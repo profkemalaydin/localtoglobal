@@ -172,14 +172,14 @@
       border-radius: 16px; padding: 2.5rem; text-align: center;
     }
     .trainer-avatar {
-      width: 100%; height: 280px; border-radius: 12px;
-      background: linear-gradient(135deg, var(--teal), var(--gold));
+      width: 100%; height: 300px; border-radius: 12px;
+      background: rgba(0,0,0,0.3);
       margin: 0 auto 1.5rem;
       display: flex; align-items: center; justify-content: center;
       font-size: 2rem; font-weight: 800; color: white;
       overflow: hidden;
     }
-    .trainer-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .trainer-avatar img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
     .trainer-name { font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.25rem; }
     .trainer-role { font-size: 0.85rem; color: var(--gold); font-weight: 600; margin-bottom: 1rem; }
     .trainer-bio { font-size: 0.9rem; color: rgba(255,255,255,0.65); line-height: 1.65; }
@@ -344,7 +344,7 @@
 
     <div class="trainers-grid">
       <div class="trainer-card">
-        <div class="trainer-avatar"><img src="rumeysa.jpeg" alt="Rumeysa Sarıkamış" style="object-position: 60% center;"></div>
+        <div class="trainer-avatar"><img src="rumeysa.jpeg" alt="Rumeysa Sarıkamış"></div>
         <div class="trainer-name">Rumeysa Sarıkamış</div>
         <div class="trainer-role">Global English Teacher &amp; Educator</div>
         <p class="trainer-bio">Specializes in helping English teachers move beyond local habits and build a global classroom identity — using real language, modern tools, and a communicative teaching philosophy.</p>
