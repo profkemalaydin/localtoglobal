@@ -236,6 +236,61 @@
     .btn-secondary { background: transparent; color: var(--navy); border: 2px solid var(--navy); }
     .btn-secondary:hover { background: var(--navy); color: white; }
 
+    /* ── FLYER ── */
+    .flyer {
+      background: linear-gradient(140deg, #6d3de8 0%, #7f53f4 100%);
+      color: white;
+    }
+    .flyer .section-label { color: #f2d67d; }
+    .flyer .section-title { color: white; }
+    .flyer .section-sub { color: rgba(255,255,255,0.8); }
+    .flyer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    .flyer-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 14px;
+      padding: 1.5rem;
+    }
+    .flyer-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 0.8rem;
+      color: #f2d67d;
+    }
+    .flyer-card ul {
+      margin-left: 1rem;
+    }
+    .flyer-card li {
+      margin-bottom: 0.45rem;
+      color: rgba(255,255,255,0.95);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    /* ── POLICY ── */
+    .policy {
+      background: #fff8eb;
+      border-top: 1px solid #f3dfb5;
+      border-bottom: 1px solid #f3dfb5;
+    }
+    .policy-box {
+      max-width: 880px;
+      margin: 0 auto;
+      background: white;
+      border: 1px solid #f1e5ca;
+      border-radius: 14px;
+      padding: 1.5rem;
+    }
+    .policy-box p {
+      color: #374151;
+      font-size: 0.95rem;
+      margin-bottom: 0.6rem;
+    }
+    .policy-box p:last-child { margin-bottom: 0; }
+
     /* ── FOOTER ── */
     footer {
       background: #0d1b2a; color: rgba(255,255,255,0.5);
@@ -246,7 +301,7 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 720px) {
-      .learn-grid, .trainers-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .learn-grid, .trainers-grid, .pricing-grid, .flyer-grid { grid-template-columns: 1fr; }
       .pricing-grid { max-width: 100%; }
       .hero-stats { gap: 2rem; }
       .cert-box { padding: 2rem; }
@@ -391,6 +446,7 @@
           <li>Both sessions included</li>
           <li>Certificate of participation</li>
           <li>Access to session materials</li>
+          <li>Payment by Stripe or Zelle business account</li>
           <li><strong>Only 25 spots available</strong></li>
         </ul>
         <a href="https://buy.stripe.com/dRmeVc5WY9e68Xwagbcwg02" target="_blank" class="btn-register btn-primary">Register for $149</a>
@@ -432,10 +488,70 @@
   </div>
 </section>
 
+<!-- TURKISH FLYER -->
+<section class="flyer">
+  <div class="container">
+    <div class="section-label">Bonus Material</div>
+    <h2 class="section-title">Turkish Flyer Content (for social media)</h2>
+    <p class="section-sub">Website stays in English, but you can copy this Turkish flyer text for Instagram posts, stories, and WhatsApp announcements.</p>
+
+    <div class="flyer-grid">
+      <div class="flyer-card">
+        <h3>Eğitim Neleri Kapsıyor?</h3>
+        <ul>
+          <li>Gününü İngilizce gelişimine göre yapılandırma</li>
+          <li>Ücretsiz ve etkili konuşma pratiği sistemleri</li>
+          <li>Kelimeyi pasiften aktife çevirme yöntemleri</li>
+          <li>Doğal ve akıcı konuşma hızı teknikleri</li>
+        </ul>
+      </div>
+      <div class="flyer-card">
+        <h3>Kimler Katılabilir?</h3>
+        <ul>
+          <li>Konuşurken kelimeler zihninde karışıyorsa</li>
+          <li>Sadece belli ortamlarda İngilizce kullanabiliyorsan</li>
+          <li>Kendini daha iyi ifade etmek istiyorsan</li>
+          <li>Global fırsatlara açılmak istiyorsan</li>
+        </ul>
+      </div>
+      <div class="flyer-card">
+        <h3>Eğitim Ne Zaman?</h3>
+        <ul>
+          <li>Süre: 3+ saat / 2 oturum</li>
+          <li>Kayıt bağlantısı 1 ay boyunca aktif kalır</li>
+          <li>Instagram bio veya localtoglobal.net üzerinden kayıt</li>
+          <li>Kontenjan sınırlıdır (ilk 25 kişi)</li>
+        </ul>
+      </div>
+      <div class="flyer-card">
+        <h3>Katılımcılara Özel</h3>
+        <ul>
+          <li>Workshop kayıtlarına tekrar erişim</li>
+          <li>Uygulanabilir PDF dokümanlar</li>
+          <li>Global kaynak listesi</li>
+          <li>Workshop sonrası 1 defalık e-posta geri bildirimi</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POLICIES -->
+<section class="policy">
+  <div class="container">
+    <div class="policy-box">
+      <p><strong>Payment options:</strong> Stripe card checkout and Zelle business transfer are available.</p>
+      <p><strong>Registration link validity:</strong> Each registration link remains active for one month from its release date.</p>
+      <p><strong>Refund policy:</strong> All registrations are final. No refunds.</p>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <p><strong>From Local to Global</strong> &nbsp;·&nbsp; Professional Development for English Teachers</p>
-  <p style="margin-top: 0.5rem;">Questions? <a href="mailto:info@localtoglobal.net">info@localtoglobal.net</a></p>
+  <p style="margin-top: 0.5rem;">Questions? <a href="mailto:info@localtoglobal.net">info@localtoglobal.net</a> &nbsp;·&nbsp; <a href="tel:+16144778377">+1 (614) 477-8377</a></p>
+  <p style="margin-top: 0.5rem;">For Zelle business transfer details, contact us via email or phone.</p>
 </footer>
 
 </body>
