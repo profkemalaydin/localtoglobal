@@ -524,9 +524,9 @@
     <h2 class="section-title" style="text-align:center;">Choose your spot.</h2>
     <p class="section-sub" style="text-align:center; margin: 0 auto 3rem;">Express price ends May 1 · Early Bird May 1–25 · Event: June 20</p>
 
-    <div class="pricing-grid" style="grid-template-columns: 1fr; max-width: 420px;">
-      <!-- EXPRESS — active Apr 24 – May 1 -->
-      <div class="price-card featured">
+    <div class="pricing-grid" id="pricing-grid" style="grid-template-columns: 1fr 1fr; max-width: 860px;">
+      <!-- EXPRESS — visible until sold out (Stripe cap: 25) or manually removed -->
+      <div class="price-card featured" id="card-express">
         <div class="price-badge">Express — Ends May 1</div>
         <div class="price-label">Best Price · First 25 Only</div>
         <div class="price-amount"><sup>$</sup>149</div>
@@ -538,15 +538,14 @@
           <li>Access to session materials</li>
           <li>Pay by card</li>
         </ul>
-        <a href="https://buy.stripe.com/dRmeVc5WY9e68Xwagbcwg02" target="_blank" class="btn-register btn-primary">Pay by Card</a>
+        <a href="https://buy.stripe.com/dRmeVc5WY9e68Xwagbcwg02" target="_blank" class="btn-register btn-primary">Pay by Card — $149</a>
         <p style="text-align:center; font-size:0.78rem; color:var(--gray); margin-top:1rem;">All registrations are final. No refunds.</p>
       </div>
 
-      <!-- EARLY BIRD — active May 1–25 -->
-      <!--
-      <div class="price-card">
+      <!-- EARLY BIRD — visible now, hidden after May 25 -->
+      <div class="price-card" id="card-earlybird">
         <div class="price-badge" style="background:#e5e7eb;color:#1a2e4a;">Early Bird</div>
-        <div class="price-label">Save $61</div>
+        <div class="price-label">May 1 – 25</div>
         <div class="price-amount"><sup>$</sup>189</div>
         <div class="price-note">May 1 – 25, 2026</div>
         <ul class="price-features">
@@ -554,15 +553,14 @@
           <li>Both sessions included</li>
           <li>Certificate of participation</li>
           <li>Access to session materials</li>
+          <li>Pay by card</li>
         </ul>
-        <a href="https://buy.stripe.com/dRmeVc5WY9e68Xwagbcwg02" target="_blank" class="btn-register btn-secondary">Register for $189</a>
+        <a href="https://buy.stripe.com/3cI8wO712bmeddMgEzcwg03" target="_blank" class="btn-register btn-secondary">Pay by Card — $189</a>
         <p style="text-align:center; font-size:0.78rem; color:var(--gray); margin-top:1rem;">All registrations are final. No refunds.</p>
       </div>
-      -->
 
-      <!-- REGULAR — active after May 25 -->
-      <!--
-      <div class="price-card">
+      <!-- REGULAR — shown automatically after May 25 via JS -->
+      <div class="price-card" id="card-regular" style="display:none;">
         <div class="price-label">Regular Price</div>
         <div class="price-amount"><sup>$</sup>250</div>
         <div class="price-note">After May 25, 2026</div>
@@ -571,12 +569,25 @@
           <li>Both sessions included</li>
           <li>Certificate of participation</li>
           <li>Access to session materials</li>
+          <li>Pay by card</li>
         </ul>
-        <a href="https://buy.stripe.com/bJeeVc712gGyc9I4VRcwg00" target="_blank" class="btn-register btn-secondary">Register for $250</a>
+        <a href="https://buy.stripe.com/bJeeVc712gGyc9I4VRcwg00" target="_blank" class="btn-register btn-secondary">Pay by Card — $250</a>
         <p style="text-align:center; font-size:0.78rem; color:var(--gray); margin-top:1rem;">All registrations are final. No refunds.</p>
       </div>
-      -->
     </div>
+
+    <script>
+      (function() {
+        var now = new Date();
+        var may25 = new Date('2026-05-25T00:00:00');
+        if (now >= may25) {
+          document.getElementById('card-earlybird').style.display = 'none';
+          document.getElementById('card-regular').style.display = 'block';
+          document.getElementById('pricing-grid').style.gridTemplateColumns = '1fr';
+          document.getElementById('pricing-grid').style.maxWidth = '420px';
+        }
+      })();
+    </script>
   </div>
 </section>
 
