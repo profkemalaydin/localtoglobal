@@ -197,8 +197,8 @@
 
     /* ── PRICING ── */
     .pricing-grid {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;
-      max-width: 1080px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      max-width: 860px; margin: 0 auto;
     }
     .price-card {
       border: 2px solid #e5e7eb; border-radius: 16px;
@@ -524,7 +524,7 @@
     <h2 class="section-title" style="text-align:center;">Choose your spot.</h2>
     <p class="section-sub" style="text-align:center; margin: 0 auto 3rem;">Express price ends May 1 · Early Bird May 1–25 · Event: June 20</p>
 
-    <div class="pricing-grid" id="pricing-grid" style="grid-template-columns: 1fr 1fr; max-width: 860px;">
+    <div class="pricing-grid" id="pricing-grid">
       <!-- EXPRESS — visible until sold out (Stripe cap: 25) or manually removed -->
       <div class="price-card featured" id="card-express">
         <div class="price-badge">Express — Ends May 1</div>
@@ -585,6 +585,7 @@
           document.getElementById('card-regular').style.display = 'block';
           document.getElementById('pricing-grid').style.gridTemplateColumns = '1fr';
           document.getElementById('pricing-grid').style.maxWidth = '420px';
+          document.getElementById('pricing-grid').style.margin = '0 auto';
         }
       })();
     </script>
