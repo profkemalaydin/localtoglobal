@@ -522,15 +522,15 @@
   <div class="container">
     <div class="section-label" style="text-align:center;">Registration</div>
     <h2 class="section-title" style="text-align:center;">Choose your spot.</h2>
-    <p class="section-sub" style="text-align:center; margin: 0 auto 3rem;">Express price ends May 1 · Early Bird May 1–25 · Event: June 20</p>
+    <p class="section-sub" style="text-align:center; margin: 0 auto 3rem;">Express price ends May 15 · Early Bird May 16–31 · Event: June 20</p>
 
     <div class="pricing-grid" id="pricing-grid">
-      <!-- EXPRESS — visible until sold out (Stripe cap: 25) or manually removed -->
+      <!-- EXPRESS — visible until May 15 or manually removed -->
       <div class="price-card featured" id="card-express">
-        <div class="price-badge">Express — Ends May 1</div>
-        <div class="price-label">Best Price · First 25 Only</div>
+        <div class="price-badge">Express — Ends May 15</div>
+        <div class="price-label">Best Price</div>
         <div class="price-amount"><sup>$</sup>149</div>
-        <div class="price-note">April 24 – May 1, 2026 · Limited to 25 seats</div>
+        <div class="price-note">April 24 – May 15, 2026</div>
         <ul class="price-features">
           <li>3+ hour live training</li>
           <li>Both sessions included</li>
@@ -542,12 +542,12 @@
         <p style="text-align:center; font-size:0.78rem; color:var(--gray); margin-top:1rem;">All registrations are final. No refunds.</p>
       </div>
 
-      <!-- EARLY BIRD — visible now, hidden after May 25 -->
+      <!-- EARLY BIRD — visible now, hidden after May 31 -->
       <div class="price-card" id="card-earlybird">
         <div class="price-badge" style="background:#e5e7eb;color:#1a2e4a;">Early Bird</div>
-        <div class="price-label">May 1 – 25</div>
+        <div class="price-label">May 16 – 31</div>
         <div class="price-amount"><sup>$</sup>179</div>
-        <div class="price-note">May 1 – 25, 2026</div>
+        <div class="price-note">May 16 – 31, 2026</div>
         <ul class="price-features">
           <li>3+ hour live training</li>
           <li>Both sessions included</li>
@@ -563,7 +563,7 @@
       <div class="price-card" id="card-regular" style="display:none;">
         <div class="price-label">Regular Price</div>
         <div class="price-amount"><sup>$</sup>200</div>
-        <div class="price-note">After May 25, 2026</div>
+        <div class="price-note">After May 31, 2026</div>
         <ul class="price-features">
           <li>3+ hour live training</li>
           <li>Both sessions included</li>
@@ -579,8 +579,8 @@
     <script>
       (function() {
         var now = new Date();
-        var may25 = new Date('2026-05-25T00:00:00');
-        if (now >= may25) {
+        var may31 = new Date('2026-05-31T00:00:00');
+        if (now >= may31) {
           document.getElementById('card-earlybird').style.display = 'none';
           document.getElementById('card-regular').style.display = 'block';
           document.getElementById('pricing-grid').style.gridTemplateColumns = '1fr';
