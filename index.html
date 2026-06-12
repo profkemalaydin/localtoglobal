@@ -322,7 +322,7 @@
     <div class="hero-badge">Live Online Training</div>
     <p style="font-size:0.8rem; color:rgba(255,255,255,0.65); margin-top:-1rem; margin-bottom:1.75rem;">⚠️ Bu eğitim bir TESOL sertifikası veya İngilizce Dil eğitimi değildir. Lütfen tüm detayları okumadan satın almayınız.</p>
     <h1>From <span>Local</span><br>to Global</h1>
-    <p>A 3+ hour live online training for English teachers ready to grow beyond borders.<br><span style="font-size:0.9rem; opacity:0.8;">June 20, Saturday · 1 PM EST / 20:00 TR</span></p>
+    <p>A 3+ hour live online training for English learners and Teachers.<br><span style="font-size:0.9rem; opacity:0.8;">June 20, Saturday · 1 PM EST / 20:00 TR</span></p>
     <p style="font-size:0.875rem; color:rgba(255,255,255,0.5); margin-top:-0.5rem; margin-bottom:2rem;">🇹🇷 Türkçe bilgi için <a href="#turkish" style="color:var(--gold); text-decoration:underline;">aşağıya kaydırın</a></p>
     <div class="hero-buttons">
       <a href="#register" class="btn-gold">Register — $179</a>
@@ -522,16 +522,11 @@
   <div class="container">
     <div class="section-label" style="text-align:center;">Registration</div>
     <h2 class="section-title" style="text-align:center;">Choose your spot.</h2>
-    <p class="section-sub" style="text-align:center; margin: 0 auto 3rem;">Early Bird $179 through May 31 · Regular $200 after · Event: June 20</p>
+    <p class="section-sub" style="text-align:center; margin: 0 auto 3rem;">$179 · Event: June 20</p>
 
     <div class="pricing-grid" id="pricing-grid" style="grid-template-columns:1fr; max-width:420px; margin:0 auto;">
-      <!-- EXPRESS card removed 2026-05-18 — Express window (Apr 24 – May 15) closed -->
-      <!-- EARLY BIRD — visible now, hidden after May 31 -->
       <div class="price-card featured" id="card-earlybird">
-        <div class="price-badge" style="background:#e5e7eb;color:#1a2e4a;">Early Bird</div>
-        <div class="price-label">May 16 – 31</div>
         <div class="price-amount"><sup>$</sup>179</div>
-        <div class="price-note">May 16 – 31, 2026</div>
         <ul class="price-features">
           <li>3+ hour live training</li>
           <li>Both sessions included</li>
@@ -542,34 +537,7 @@
         <a href="https://buy.stripe.com/eVq00igBCbmec9I9c7cwg04" target="_blank" class="btn-register btn-secondary">Pay by Card — $179</a>
         <p style="text-align:center; font-size:0.78rem; color:var(--gray); margin-top:1rem;">All registrations are final. No refunds.</p>
       </div>
-
-      <!-- REGULAR — shown automatically after May 25 via JS -->
-      <div class="price-card" id="card-regular" style="display:none;">
-        <div class="price-label">Regular Price</div>
-        <div class="price-amount"><sup>$</sup>200</div>
-        <div class="price-note">After May 31, 2026</div>
-        <ul class="price-features">
-          <li>3+ hour live training</li>
-          <li>Both sessions included</li>
-          <li>Certificate of participation</li>
-          <li>Access to session materials</li>
-          <li>Pay by card</li>
-        </ul>
-        <a href="https://buy.stripe.com/9B65kCfxy2PIddM0FBcwg05" target="_blank" class="btn-register btn-secondary">Pay by Card — $200</a>
-        <p style="text-align:center; font-size:0.78rem; color:var(--gray); margin-top:1rem;">All registrations are final. No refunds.</p>
-      </div>
     </div>
-
-    <script>
-      (function() {
-        var now = new Date();
-        var may31 = new Date('2026-05-31T00:00:00');
-        if (now >= may31) {
-          document.getElementById('card-earlybird').style.display = 'none';
-          document.getElementById('card-regular').style.display = 'block';
-        }
-      })();
-    </script>
   </div>
 </section>
 
