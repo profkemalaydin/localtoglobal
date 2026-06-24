@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Local to Global — On-Demand Replay</title>
+  <meta name="description" content="20 Haziran 2026 canlı kohortunun tam kaydı. 3+ saatlik eğitim, hayat boyu erişim. $79." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy: #3d1f8c;
+      --teal: #8C52FF;
+      --gold: #e8a838;
+      --light: #f0ebff;
+      --white: #ffffff;
+      --gray: #6b7280;
+      --text: #1f2937;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      padding: 1rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .logo { font-weight: 800; font-size: 1rem; color: var(--navy); letter-spacing: -0.3px; text-decoration: none; }
+    .nav-right { display: flex; align-items: center; gap: 1.25rem; }
+    .nav-link { font-size: 0.875rem; color: var(--gray); text-decoration: none; font-weight: 500; }
+    .nav-link:hover { color: var(--navy); }
+    .nav-cta {
+      background: var(--navy); color: white;
+      padding: 0.55rem 1.3rem; border-radius: 6px;
+      text-decoration: none; font-size: 0.875rem; font-weight: 600;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--teal); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(140deg, #1e0d5e 0%, #3d1f8c 50%, #8C52FF 100%);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; width: 700px; height: 700px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+      top: -150px; right: -200px;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; width: 400px; height: 400px;
+      border-radius: 50%;
+      background: rgba(232,168,56,0.06);
+      bottom: -100px; left: -100px;
+    }
+    .hero-inner { position: relative; z-index: 1; max-width: 760px; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(232,168,56,0.15);
+      color: var(--gold);
+      border: 1px solid rgba(232,168,56,0.35);
+      padding: 0.4rem 1.1rem; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; margin-bottom: 1.75rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.6rem, 6.5vw, 4.6rem);
+      font-weight: 800; color: white;
+      line-height: 1.05; letter-spacing: -1.5px;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 span { color: var(--gold); }
+    .hero-tagline {
+      font-size: 1.15rem; color: rgba(255,255,255,0.78);
+      max-width: 580px; margin: 0 auto 2.25rem;
+    }
+    .hero-meta {
+      display: flex; gap: 2rem; justify-content: center; align-items: center;
+      flex-wrap: wrap; margin-bottom: 2.5rem;
+      font-size: 0.875rem; color: rgba(255,255,255,0.65);
+    }
+    .hero-meta span { display: inline-flex; align-items: center; gap: 0.5rem; }
+    .hero-meta strong { color: white; font-weight: 700; }
+
+    /* Video preview frame */
+    .preview-frame {
+      max-width: 580px; margin: 0 auto 2.5rem;
+      border-radius: 16px; overflow: hidden;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.15);
+      aspect-ratio: 16 / 9;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .preview-frame:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 25px 60px rgba(232,168,56,0.25);
+    }
+    .preview-frame::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(140,82,255,0.25), rgba(232,168,56,0.18));
+    }
+    .preview-play {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 84px; height: 84px;
+      border-radius: 50%; background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 40px rgba(232,168,56,0.5);
+    }
+    .preview-play::after {
+      content: '';
+      width: 0; height: 0;
+      border-left: 22px solid var(--navy);
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      margin-left: 5px;
+    }
+    .preview-caption {
+      position: absolute; bottom: 1rem; left: 1rem;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+      color: white; font-size: 0.75rem; font-weight: 600;
+      padding: 0.35rem 0.75rem; border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-buttons {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+    .btn-gold {
+      background: var(--gold); color: var(--navy);
+      padding: 1rem 2.25rem; border-radius: 8px;
+      text-decoration: none; font-weight: 700; font-size: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+    }
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(232,168,56,0.4);
+    }
+    .btn-ghost {
+      background: transparent; color: white;
+      border: 2px solid rgba(255,255,255,0.35);
+      padding: 1rem 2.25rem; border-radius: 8px;
+      text-decoration: none; font-weight: 600; font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover { border-color: white; background: rgba(255,255,255,0.08); }
+
+    .hero-trust {
+      margin-top: 2rem;
+      font-size: 0.78rem; color: rgba(255,255,255,0.55);
+      display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
+    }
+    .hero-trust span { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+    /* ── SHARED ── */
+    section { padding: 5.5rem 2rem; }
+    .container { max-width: 1080px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 800;
+      color: var(--navy); line-height: 1.15; letter-spacing: -0.5px;
+      margin-bottom: 0.9rem;
+    }
+    .section-sub { color: var(--gray); font-size: 1.05rem; max-width: 620px; margin-bottom: 3rem; }
+
+    /* ── WHY ── */
+    .why-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+    }
+    .why-card {
+      background: white; border: 1px solid #e5e7eb;
+      border-radius: 16px; padding: 2rem;
+    }
+    .why-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 1rem;
+    }
+    .why-card h3 {
+      font-size: 1.05rem; font-weight: 700; color: var(--navy);
+      margin-bottom: 0.5rem;
+    }
+    .why-card p { color: #4b5563; font-size: 0.92rem; line-height: 1.6; }
+
+    /* ── CHAPTERS ── */
+    .chapters { background: var(--light); }
+    .chapters-list {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    }
+    .chapter {
+      background: white; border-radius: 14px;
+      padding: 1.75rem 2rem; border: 1px solid rgba(0,0,0,0.04);
+      display: flex; gap: 1.25rem; align-items: flex-start;
+    }
+    .chapter-num {
+      font-size: 1.8rem; font-weight: 800; color: var(--teal);
+      line-height: 1; min-width: 2rem; opacity: 0.7;
+    }
+    .chapter h3 {
+      font-size: 1rem; font-weight: 700; color: var(--navy);
+      margin-bottom: 0.4rem; line-height: 1.3;
+    }
+    .chapter p { color: #6b7280; font-size: 0.88rem; line-height: 1.55; }
+    .chapter-time {
+      display: inline-block; margin-top: 0.6rem;
+      font-size: 0.72rem; color: var(--gray); font-weight: 600;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+
+    /* ── FOR-WHOM ── */
+    .for-whom-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;
+    }
+    .for-card {
+      background: white; border: 2px solid #e5e7eb;
+      border-radius: 14px; padding: 1.75rem 2rem;
+    }
+    .for-card.yes { border-color: rgba(140,82,255,0.3); background: #faf7ff; }
+    .for-card.no { border-color: #fee2e2; background: #fef9f9; }
+    .for-card h3 {
+      font-size: 0.95rem; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .for-card.yes h3 { color: var(--navy); }
+    .for-card.no h3 { color: #991b1b; }
+    .for-card ul { list-style: none; }
+    .for-card li {
+      padding: 0.5rem 0 0.5rem 1.75rem; position: relative;
+      font-size: 0.92rem; color: #374151;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .for-card li:last-child { border-bottom: none; }
+    .for-card.yes li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 800; }
+    .for-card.no li::before { content: '✕'; position: absolute; left: 0; color: #ef4444; font-weight: 800; }
+
+    /* ── TRAINERS ── */
+    .trainers { background: var(--navy); }
+    .trainers .section-label { color: var(--gold); }
+    .trainers .section-title { color: white; }
+    .trainers .section-sub { color: rgba(255,255,255,0.65); }
+    .trainers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .trainer-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 2.5rem; text-align: center;
+    }
+    .trainer-avatar {
+      width: 100%; height: 280px; border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      margin: 0 auto 1.5rem;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .trainer-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .trainer-name { font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.25rem; }
+    .trainer-role { font-size: 0.85rem; color: var(--gold); font-weight: 600; margin-bottom: 1rem; }
+    .trainer-bio { font-size: 0.9rem; color: rgba(255,255,255,0.65); line-height: 1.65; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { background: #fafafa; }
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .testi-card {
+      background: white; border-radius: 14px;
+      padding: 1.75rem; border: 1px solid #e5e7eb;
+      position: relative;
+    }
+    .testi-stars { color: var(--gold); font-size: 0.95rem; margin-bottom: 0.75rem; }
+    .testi-text {
+      color: #374151; font-size: 0.95rem; line-height: 1.65;
+      margin-bottom: 1.25rem;
+    }
+    .testi-author {
+      font-size: 0.85rem; font-weight: 700; color: var(--navy);
+    }
+    .testi-role { font-size: 0.78rem; color: var(--gray); }
+
+    /* ── COMPARE ── */
+    .compare { background: var(--light); }
+    .compare-table {
+      max-width: 820px; margin: 0 auto;
+      background: white; border-radius: 16px;
+      overflow: hidden; border: 1px solid rgba(0,0,0,0.06);
+    }
+    .compare-row {
+      display: grid; grid-template-columns: 1.4fr 1fr 1fr;
+      border-bottom: 1px solid #f1f1f5;
+    }
+    .compare-row:last-child { border-bottom: none; }
+    .compare-row > div { padding: 1rem 1.5rem; font-size: 0.9rem; }
+    .compare-feat { color: var(--navy); font-weight: 600; }
+    .compare-row.head { background: #fafafa; }
+    .compare-row.head > div { padding: 1.5rem 1.5rem 1.25rem; font-weight: 800; color: var(--navy); }
+    .compare-row.head .col-live {
+      background: rgba(232,168,56,0.08);
+      border-left: 3px solid var(--gold);
+    }
+    .compare-row .col-live {
+      background: rgba(232,168,56,0.03);
+      border-left: 3px solid rgba(232,168,56,0.4);
+    }
+    .compare-row .col-replay {
+      background: rgba(140,82,255,0.04);
+    }
+    .check { color: var(--teal); font-weight: 800; font-size: 1.1rem; }
+    .cross { color: #cbd5e1; font-weight: 800; font-size: 1.1rem; }
+    .compare-cta {
+      text-align: center; margin-top: 2rem;
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+    .compare-cta a {
+      padding: 0.85rem 1.75rem; border-radius: 8px;
+      text-decoration: none; font-weight: 700; font-size: 0.9rem;
+    }
+    .compare-cta a.primary {
+      background: var(--navy); color: white;
+    }
+    .compare-cta a.primary:hover { background: var(--teal); }
+    .compare-cta a.outline {
+      background: transparent; color: var(--navy);
+      border: 2px solid var(--navy);
+    }
+    .compare-cta a.outline:hover { background: var(--navy); color: white; }
+
+    /* ── CTA ── */
+    .cta-strip {
+      background: linear-gradient(140deg, #3d1f8c 0%, #8C52FF 100%);
+      color: white;
+    }
+    .cta-strip .container { text-align: center; max-width: 700px; }
+    .cta-strip .section-label { color: var(--gold); }
+    .cta-strip h2 {
+      font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800;
+      color: white; line-height: 1.15; letter-spacing: -0.5px;
+      margin-bottom: 1rem;
+    }
+    .cta-strip p {
+      color: rgba(255,255,255,0.8);
+      font-size: 1.05rem; margin-bottom: 2.25rem;
+    }
+    .cta-price {
+      display: inline-flex; align-items: baseline; gap: 0.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .cta-price .num {
+      font-size: 4rem; font-weight: 800; color: white;
+      line-height: 1; letter-spacing: -2px;
+    }
+    .cta-price .currency { font-size: 1.5rem; color: rgba(255,255,255,0.7); font-weight: 700; }
+    .cta-price .freq { font-size: 0.95rem; color: rgba(255,255,255,0.6); font-weight: 500; }
+    .cta-guarantee {
+      margin-top: 1.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.6);
+    }
+
+    /* ── FAQ ── */
+    .faq-list { max-width: 760px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 1.25rem 0;
+    }
+    .faq-item summary {
+      font-weight: 700; color: var(--navy); cursor: pointer;
+      font-size: 1rem; line-height: 1.4;
+      list-style: none; padding-right: 2rem; position: relative;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: '+'; position: absolute; right: 0; top: 0;
+      font-size: 1.3rem; color: var(--teal); font-weight: 600;
+      transition: transform 0.2s;
+    }
+    .faq-item[open] summary::after { content: '−'; }
+    .faq-item p {
+      margin-top: 0.75rem; color: #4b5563;
+      font-size: 0.95rem; line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #1e0d5e; color: rgba(255,255,255,0.5);
+      text-align: center; padding: 3rem 2rem 2.5rem;
+      font-size: 0.875rem;
+    }
+    footer .footer-brand {
+      font-weight: 700; color: white; font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    footer strong { color: rgba(255,255,255,0.85); }
+    footer a { color: var(--gold); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-links {
+      margin-top: 1.25rem; display: flex; gap: 1.5rem;
+      justify-content: center; flex-wrap: wrap;
+      font-size: 0.8rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 820px) {
+      .why-grid, .chapters-list, .for-whom-grid, .trainers-grid, .testi-grid {
+        grid-template-columns: 1fr;
+      }
+      .compare-row { grid-template-columns: 1.2fr 1fr 1fr; }
+      .compare-row > div { padding: 0.85rem 0.9rem; font-size: 0.85rem; }
+      .hero-meta { gap: 1rem; }
+      nav { padding: 0.75rem 1.25rem; }
+      .nav-right { gap: 0.75rem; }
+      .nav-link { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">From Local to Global</a>
+  <div class="nav-right">
+    <a href="#chapters" class="nav-link">İçerik</a>
+    <a href="#trainers" class="nav-link">Eğitmenler</a>
+    <a href="#faq" class="nav-link">SSS</a>
+    <a href="#buy" class="nav-cta">$79 — Şimdi izle</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">On-Demand Replay · v1</div>
+    <h1>From <span>Local</span> to Global<br>artık <span>her zaman</span> izlenebilir.</h1>
+    <p class="hero-tagline">
+      20 Haziran 2026 canlı kohortunun tam kaydı. Türkiye'den uluslararası
+      İngilizce öğretmenliğine geçişin pratik yol haritası — kendi tempo'nda, hayat boyu erişimle.
+    </p>
+
+    <div class="hero-meta">
+      <span>⏱ <strong>3+ saat</strong> içerik</span>
+      <span>♾️ <strong>Lifetime</strong> erişim</span>
+      <span>📱 <strong>Her cihazda</strong></span>
+      <span>↩ <strong>30 gün</strong> iade garantisi</span>
+    </div>
+
+    <div class="preview-frame" role="button" aria-label="Fragmanı izle">
+      <div class="preview-play"></div>
+      <div class="preview-caption">3 dakikalık fragman</div>
+    </div>
+
+    <div class="hero-buttons">
+      <a href="#buy" class="btn-gold">Şimdi izle — $79 →</a>
+      <a href="#chapters" class="btn-ghost">İçeriği gör</a>
+    </div>
+
+    <div class="hero-trust">
+      <span>🔒 Stripe ile güvenli ödeme</span>
+      <span>↩ 30 gün koşulsuz iade</span>
+      <span>📩 Anında erişim linki</span>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section>
+  <div class="container" style="text-align:center;">
+    <div class="section-label">Neden Replay?</div>
+    <h2 class="section-title">Canlıya yetişemedin mi?<br>Sorun değil.</h2>
+    <p class="section-sub" style="margin-left:auto; margin-right:auto;">
+      Eğitimden öğrenen yüzlerce öğretmenin geri dönüşüyle bu replay'i hazırladık.
+      Aynı içerik, aynı eğitmenler, kendi tempon — sadece bir farkla: canlı Q&A yerine
+      kendi sorularınla baş başasın.
+    </p>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">⏱</div>
+        <h3>Kendi tempon</h3>
+        <p>3+ saatlik içeriği istediğin gibi böl, durdur, geri sar. Akşam çayında 20 dakika, hafta sonu derinleş.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">♾️</div>
+        <h3>Hayat boyu erişim</h3>
+        <p>Bir kere al, hep elinde olsun. Yeniden izlemek istediğinde link aynı yerde, aynı kalitede.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📩</div>
+        <h3>Anında başla</h3>
+        <p>Ödeme tamamlanır tamamlanmaz erişim linkin mail kutuna düşer. Cep telefonu, tablet, bilgisayar — fark etmez.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTERS -->
+<section id="chapters" class="chapters">
+  <div class="container">
+    <div class="section-label">İçinde Ne Var</div>
+    <h2 class="section-title">2 oturum.<br>10 pratik bölüm.</h2>
+    <p class="section-sub">
+      İki uzman eğitmenden, iki farklı bakış açısı. Türkiye'deki öğretmen
+      gerçekliğinden uluslararası kariyere uzanan bir köprü.
+    </p>
+
+    <div class="chapters-list">
+      <div class="chapter">
+        <div class="chapter-num">01</div>
+        <div>
+          <h3>İngilizce konuşma — taklit değil, üretim</h3>
+          <p>Ders kitabı drill'lerinin neden işe yaramadığı, shadowing tekniğiyle ritim/intonation kazanma, günlük "İngilizce ortam" kurma rutinleri.</p>
+          <div class="chapter-time">~25 dakika</div>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="chapter-num">02</div>
+        <div>
+          <h3>Sentence starters & opinion patterns</h3>
+          <p>Görüş bildirme, örnek verme, karşılaştırma kalıpları. "I think" ötesinde gerçek bir konuşmacının kullandığı yapılar.</p>
+          <div class="chapter-time">~20 dakika</div>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="chapter-num">03</div>
+        <div>
+          <h3>Telaffuz: sounds → stress → accent</h3>
+          <p>Türk öğretmenlerin en sık takıldığı 12 ses, kelime vurgusunun anlam üzerindeki etkisi, doğal aksana giden adım adım yol.</p>
+          <div class="chapter-time">~30 dakika</div>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="chapter-num">04</div>
+        <div>
+          <h3>Pasif app değil, aktif üretim</h3>
+          <p>Duolingo neden yetmiyor? Her input'u (dizi, podcast, makale) konuşma çıktısına dönüştürmenin pratik yöntemi.</p>
+          <div class="chapter-time">~18 dakika</div>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="chapter-num">05</div>
+        <div>
+          <h3>Sınıfta lecturer'dan facilitator'a</h3>
+          <p>Tahta başında ders anlatan öğretmenden, öğrenciyi konuşmaya iten kolaylaştırıcıya geçiş — somut sınıf-içi taktikler.</p>
+          <div class="chapter-time">~22 dakika</div>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="chapter-num">06</div>
+        <div>
+          <h3>Classroom English (doğal & işlevsel)</h3>
+          <p>"Open your books" ezberlerinin ötesinde, gerçek sınıf etkileşiminde ihtiyaç duyduğun 50 fonksiyonel ifade.</p>
+          <div class="chapter-time">~20 dakika</div>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="chapter-num">07</div>
+        <div>
+          <h3>ESL standartları & US sınıf gerçekliği</h3>
+          <p>ABD'de bir ESL öğretmeninin günü, beklenen yetkinlikler, Türk öğretmenlerin getirdiği avantajlar (evet, var).</p>
+          <div class="chapter-time">~25 dakika</div>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="chapter-num">08</div>
+        <div>
+          <h3>TESOL & uluslararası kariyer yolları</h3>
+          <p>CELTA / TKT / TESOL sertifikalarının pratik farkları, online platformlarda iş bulma stratejisi, fiyat aralıkları.</p>
+          <div class="chapter-time">~22 dakika</div>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="chapter-num">09</div>
+        <div>
+          <h3>Karma seviye sınıf yönetimi</h3>
+          <p>A1 ile B2'yi aynı odada nasıl tutarsın? Eşli çalışma, farklılaştırma, "fast finisher" görevleri.</p>
+          <div class="chapter-time">~18 dakika</div>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="chapter-num">10</div>
+        <div>
+          <h3>AI'yi kendi öğretmenin gibi kullan</h3>
+          <p>ChatGPT/Claude ile ders planı, materyal üretimi, öğrenci feedback'i — somut prompt'lar ve workflow örnekleri.</p>
+          <div class="chapter-time">~25 dakika</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHOM -->
+<section>
+  <div class="container">
+    <div class="section-label">Kim İçin?</div>
+    <h2 class="section-title">Kendine bir bak — bu replay sana hitap ediyor mu?</h2>
+    <p class="section-sub">Net bir cevap için en doğrudan yol: aşağıdaki iki listeye dürüstçe bak.</p>
+
+    <div class="for-whom-grid">
+      <div class="for-card yes">
+        <h3>✓ Bu replay senin için</h3>
+        <ul>
+          <li>Devlet veya özel okulda öğretmenim, online öğretmenliğe geçişi düşünüyorum</li>
+          <li>Üniversite öğrencisi/yeni mezunum, ESL/EFL yolunda kariyer yapacağım</li>
+          <li>Kendi öğretim atölyemi kurmak istiyorum</li>
+          <li>Uluslararası platformlarda (Cambly, Preply, italki) öğretmen olmak istiyorum</li>
+          <li>İngilizce öğretmenim ama "global" perspektif eksik hissediyorum</li>
+        </ul>
+      </div>
+      <div class="for-card no">
+        <h3>✕ Bu replay senin için değil</h3>
+        <ul>
+          <li>Hiç İngilizce öğretim deneyimin yok ve sıfırdan başlıyorsun</li>
+          <li>"Pasif gelir kursu" arıyorsun</li>
+          <li>Sertifika için geliyorsun (replay sertifika vermiyor — canlı kohort veriyor)</li>
+          <li>Canlı sohbet + birebir mentorluk arıyorsun (canlı kohorta bak)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINERS -->
+<section id="trainers" class="trainers">
+  <div class="container">
+    <div class="section-label">Eğitmenler</div>
+    <h2 class="section-title">İki uzman, iki perspektif,<br>bir hedef.</h2>
+    <p class="section-sub">Sınıfta, online platformlarda, uluslararası bağlamda gerçekten öğreten profesyoneller.</p>
+
+    <div class="trainers-grid">
+      <div class="trainer-card">
+        <div class="trainer-avatar"><img src="../rumeysa.jpeg" alt="Rumeysa Sarıkamış"></div>
+        <div class="trainer-name">Rumeysa Sarıkamış</div>
+        <div class="trainer-role">Linguist · TESOL Certified · T4E Kurucusu</div>
+        <p class="trainer-bio">
+          Türkiye'den ABD'ye akademik göç deneyiminin içinden, İngilizce öğretmenlerine
+          "yerel alışkanlıklardan global sınıf kimliğine" geçişi öğretiyor —
+          gerçek dil, modern araçlar, iletişim odaklı pedagoji.
+        </p>
+      </div>
+      <div class="trainer-card">
+        <div class="trainer-avatar"><img src="../nursen.jpeg" alt="Nursen Önder"></div>
+        <div class="trainer-name">Nursen Önder</div>
+        <div class="trainer-role">English Speaking Coach</div>
+        <p class="trainer-bio">
+          Konuşma becerisi üzerine pratik, araştırma temelli stratejilerle çalışıyor —
+          shadowing'den günlük üretim alışkanlıklarına, telaffuzdan güven inşa eden
+          mikro rutinlere kadar.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-label">Katılımcılar Ne Diyor</div>
+    <h2 class="section-title">20 Haziran katılımcılarından.</h2>
+    <p class="section-sub">Canlı kohortumuza katılan öğretmenlerin gerçek sözleri.</p>
+
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Üç saat hiç sıkılmadan geçti. En çok shadowing bölümü işime yaradı — ertesi sabah uyguladım, öğrenciler şaşırdı."</p>
+        <div class="testi-author">Esra K.</div>
+        <div class="testi-role">Devlet okulu — İzmir</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Beklediğimden çok daha pratikti. 'Lecturer'dan facilitator'a' bölümünü hala düşünüyorum. Kendi dersimi tamamen değiştirdi."</p>
+        <div class="testi-author">Murat A.</div>
+        <div class="testi-role">Özel kurs — Ankara</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"AI'yi öğretmen koçu gibi kullanmayı hiç böyle düşünmemiştim. ChatGPT artık ders hazırlığımın bir parçası — zaman tasarrufu inanılmaz."</p>
+        <div class="testi-author">Selin Y.</div>
+        <div class="testi-role">Online tutor — İstanbul</div>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:2rem; font-size:0.78rem; color:#9ca3af;">İsimler katılımcı izniyle paylaşılmıştır. Tam liste için <a href="mailto:info@localtoglobal.net" style="color:var(--teal);">info@localtoglobal.net</a>.</p>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section class="compare">
+  <div class="container">
+    <div class="section-label">Replay vs Canlı Kohort</div>
+    <h2 class="section-title" style="text-align:center; margin-bottom: 0.5rem;">İki ayrı ürün. Hangi sana uyar?</h2>
+    <p class="section-sub" style="margin: 0 auto 3rem; text-align:center;">Replay = sadece kayıt. Canlı kohort = kayıt + Q&A + alumni + sertifika.</p>
+
+    <div class="compare-table">
+      <div class="compare-row head">
+        <div>Özellik</div>
+        <div class="col-replay">Replay ($79)</div>
+        <div class="col-live">Canlı Kohort v2 ($179)</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feat">3+ saat tam kayıt</div>
+        <div class="col-replay" style="text-align:center;"><span class="check">✓</span></div>
+        <div class="col-live" style="text-align:center;"><span class="check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feat">Hayat boyu erişim</div>
+        <div class="col-replay" style="text-align:center;"><span class="check">✓</span></div>
+        <div class="col-live" style="text-align:center;"><span class="check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feat">Canlı Q&A — sorularını sor</div>
+        <div class="col-replay" style="text-align:center;"><span class="cross">✕</span></div>
+        <div class="col-live" style="text-align:center;"><span class="check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feat">Peer network — birlikte öğren</div>
+        <div class="col-replay" style="text-align:center;"><span class="cross">✕</span></div>
+        <div class="col-live" style="text-align:center;"><span class="check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feat">Alumni grubu (lifetime)</div>
+        <div class="col-replay" style="text-align:center;"><span class="cross">✕</span></div>
+        <div class="col-live" style="text-align:center;"><span class="check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feat">Bonus toolkit PDF</div>
+        <div class="col-replay" style="text-align:center;"><span class="cross">✕</span></div>
+        <div class="col-live" style="text-align:center;"><span class="check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-feat">Katılım sertifikası</div>
+        <div class="col-replay" style="text-align:center;"><span class="cross">✕</span></div>
+        <div class="col-live" style="text-align:center;"><span class="check">✓</span></div>
+      </div>
+    </div>
+
+    <div class="compare-cta">
+      <a href="#buy" class="primary">Replay al — $79</a>
+      <a href="mailto:info@localtoglobal.net?subject=Canlı%20Kohort%20v2%20—%20Haber%20Al" class="outline">Canlı kohort: haber al</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="buy" class="cta-strip">
+  <div class="container">
+    <div class="section-label">Hazır mısın?</div>
+    <h2>Bugün başla.<br>Hep elinde kalsın.</h2>
+    <p>3+ saatlik içerik. Hayat boyu erişim. Anında erişim linki.</p>
+
+    <div class="cta-price">
+      <span class="currency">$</span>
+      <span class="num">79</span>
+      <span class="freq">/ tek seferlik</span>
+    </div>
+
+    <div>
+      <a href="https://buy.stripe.com/__REPLAY_LINK_PLACEHOLDER__" class="btn-gold" style="font-size:1.05rem; padding:1.1rem 2.5rem;">
+        Stripe ile güvenli öde →
+      </a>
+    </div>
+
+    <div class="cta-guarantee">
+      🔒 Stripe güvenli ödeme · ↩ 30 gün koşulsuz iade · 📩 Anında erişim<br>
+      Ödeme: Teacher4Ever Institute LLC
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-label">Sıkça Sorulanlar</div>
+    <h2 class="section-title" style="text-align:center; margin-bottom:3rem;">Aklında ne var?</h2>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Ne kadar süre erişimim olacak?</summary>
+        <p>Hayat boyu. Bir kere satın aldıktan sonra erişim linkin kalıcı — istediğin zaman, istediğin kadar izleyebilirsin. Cihaz değiştirsen, telefonu sıfırlasan bile email'inde duruyor.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Sertifika veriyor musunuz?</summary>
+        <p>Replay sertifika vermiyor. Sertifika almak istiyorsan Eylül 2026'daki canlı kohortumuza katılmalısın — orada katılım sertifikası, alumni grubuna erişim ve toolkit PDF de var.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Cep telefonumdan izleyebilir miyim?</summary>
+        <p>Evet, erişim linki tüm cihazlarda çalışır — telefon, tablet, bilgisayar. Video oynatıcı responsive; metro'da, çayda, evde — fark etmez.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Para iadesi yapıyor musunuz?</summary>
+        <p>Evet — koşulsuz. 30 gün içinde memnun değilsen <a href="mailto:info@localtoglobal.net" style="color:var(--teal);">info@localtoglobal.net</a> adresine bir email at, tam iade. Sebep açıklamana gerek yok.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Bu replay neden canlı kohorttan ucuz?</summary>
+        <p>Replay sadece kayıt — canlı Q&A yok, peer network yok, alumni grubu yok, sertifika yok. Aynı içerikten oluşmuş ama farklı bir ürün. Canlı kohorta katılanlar daha fazlasını aldı (ve daha fazlasını ödedi).</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Ödeme güvenli mi?</summary>
+        <p>Evet — ödemeler Stripe üzerinden işleniyor (PCI-DSS Level 1, dünyada en güvenli ödeme altyapısı). Teacher4Ever Institute LLC'nin korumalı hesabına geçiyor; kart bilgileriniz bizim sitemize değil, doğrudan Stripe'a gidiyor.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Türkiye'den ödeyebilir miyim?</summary>
+        <p>Evet. Stripe Türkiye'den Visa/MasterCard kabul ediyor. Ödeme USD bazlı, kartınızdan TL karşılığı çekiliyor (banka kurundan).</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Erişim linkim ne kadar sürede gelir?</summary>
+        <p>Ödeme tamamlandıktan sonra 1-2 dakika içinde mail kutuna düşer. Spam klasörünü de kontrol et — gelmezse <a href="mailto:info@localtoglobal.net" style="color:var(--teal);">info@localtoglobal.net</a>'e yaz, manuel göndeririz.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">From Local to Global</div>
+  <div>by <strong>Teacher4Ever Institute LLC</strong> · Ohio, USA</div>
+  <div class="footer-links">
+    <a href="mailto:info@localtoglobal.net">info@localtoglobal.net</a>
+    <a href="https://teacher4everrinstitute.com">teacher4everrinstitute.com</a>
+    <a href="/">localtoglobal.net</a>
+  </div>
+  <div style="margin-top:1.5rem; font-size:0.72rem; color:rgba(255,255,255,0.35);">
+    © 2026 Teacher4Ever Institute LLC. Tüm hakları saklıdır.
+  </div>
+</footer>
+
+</body>
+</html>
